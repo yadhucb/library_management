@@ -5,6 +5,7 @@ class UserSerializer(serializers.ModelSerializer):
     class Meta:
         model=User
         fields=[
+        'id',
         'username',
         'mobile',
         'password']
@@ -13,12 +14,19 @@ class UserSerializer(serializers.ModelSerializer):
         return User.objects.create_user(**validated_data)
 
 class BookSerializer(serializers.ModelSerializer):
-    available_count = serializers.SerializerMethodField()
-    
+
+    is_available = serializers.SerializerMethodField()
+
     class Meta:
         model = Book
-        fields = '__all__'
+        fields = ('id', 'name', 'author', 'qty', 'is_available')
     
+    def get_is_available(self, instance):
+        if instance.is_available:
+            return 'In stock'
+        else:
+            return 'Out of stock'
+
 class CheckOutSerializer(serializers.ModelSerializer):
 
     class Meta:

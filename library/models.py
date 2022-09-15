@@ -70,15 +70,20 @@ class User(AbstractBaseUser, PermissionsMixin):
 class Book(models.Model):
     name = models.CharField(max_length=255)
     author = models.CharField(max_length=255)
-    qty = models.IntegerField(default=1)
+    qty = models.PositiveIntegerField(default=1)
 
     def __str__(self):
         return self.name
+    @property
+    def is_available(self):
+        if self.qty ==0:
+            return False
+        else:
+            return True
 
 class CheckOut(models.Model):
     student = models.ForeignKey(User, on_delete=models.CASCADE)
     book = models.ForeignKey(Book, on_delete=models.CASCADE)
-    qty = models.IntegerField(default=1)
+    qty = models.PositiveIntegerField(default=1)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
-    returned_at = models.DateTimeField(blank=True, null=True)
